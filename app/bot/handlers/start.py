@@ -33,7 +33,7 @@ async def start_command(message: Message, db_user: Any, state: FSMContext) -> No
     await message.answer(
         welcome_text,
         reply_markup=main_menu_keyboard(),
-        parse_mode=ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
 
 
@@ -43,15 +43,15 @@ async def main_menu_callback(callback: CallbackQuery, db_user: Any, state: FSMCo
     await state.clear()
     
     text = (
-        f"🏠 *Main Menu*\n\n"
-        f"Welcome back, {db_user.display_name}\!\n"
+        f"🏠 <b>Main Menu</b>\n\n"
+        f"Welcome back, {db_user.display_name}!\n"
         f"What would you like to do?"
     )
     
     await callback.message.edit_text(
         text,
         reply_markup=main_menu_keyboard(),
-        parse_mode=ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -69,21 +69,20 @@ async def profile_callback(callback: CallbackQuery, db_user: Any) -> None:
     else:
         trial_info = "🟡 Available"
     
-    joined_date = db_user.created_at.strftime('%Y-%m-%d').replace('-', '\\-')
     text = (
-        f"👤 *Your Profile*\n\n"
-        f"🆔 ID: `{db_user.telegram_id}`\n"
+        f"👤 <b>Your Profile</b>\n\n"
+        f"🆔 ID: <code>{db_user.telegram_id}</code>\n"
         f"👤 Name: {db_user.display_name}\n"
-        f"📅 Joined: {joined_date}\n"
+        f"📅 Joined: {db_user.created_at.strftime('%Y-%m-%d')}\n"
         f"💎 Trial: {trial_info}\n"
         f"👥 Referrals: {db_user.total_referred}\n"
-        f"🔗 Your referral code: `{db_user.referral_code}`"
+        f"🔗 Your referral code: <code>{db_user.referral_code}</code>"
     )
     
     await callback.message.edit_text(
         text,
         reply_markup=profile_keyboard(has_trial=db_user.trial_used),
-        parse_mode=ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -102,19 +101,17 @@ async def activate_trial_callback(callback: CallbackQuery, db_user: Any) -> None
     success = await UserService.activate_trial(db_user.id)
     
     if success:
-        trial_expire_date = db_user.trial_end.strftime('%Y-%m-%d %H:%M').replace('-', '\\-') if db_user.trial_end else 'N/A'
-        duration_text = str(settings.trial_duration_days).replace('-', '\\-')
         text = (
-            f"🎉 *Trial Activated\!*\n\n"
-            f"✅ Your {duration_text}\\-day free trial is now active\!\n"
-            f"🛍️ Browse our catalog and enjoy premium access\.\n\n"
-            f"Trial expires: {trial_expire_date}"
+            f"🎉 <b>Trial Activated!</b>\n\n"
+            f"✅ Your {settings.trial_duration_days}-day free trial is now active!\n"
+            f"🛍️ Browse our catalog and enjoy premium access.\n\n"
+            f"Trial expires: {db_user.trial_end.strftime('%Y-%m-%d %H:%M') if db_user.trial_end else 'N/A'}"
         )
         
         await callback.message.edit_text(
             text,
             reply_markup=profile_keyboard(has_trial=True),
-            parse_mode=ParseMode.MARKDOWN_V2
+            parse_mode=ParseMode.HTML
         )
         await callback.answer("🎉 Trial activated successfully!")
     else:
@@ -128,19 +125,19 @@ async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
     referral_link = f"https://t.me/{bot_info.username}?start={db_user.referral_code}"
     
     text = (
-        f"👥 *Referral Program*\n\n"
-        f"🎁 Invite friends and earn rewards\!\n\n"
+        f"👥 <b>Referral Program</b>\n\n"
+        f"🎁 Invite friends and earn rewards!\n\n"
         f"🔗 Your referral link:\n"
-        f"`{referral_link}`\n\n"
+        f"<code>{referral_link}</code>\n\n"
         f"📊 Your statistics:\n"
         f"👥 Total referrals: {db_user.total_referred}\n\n"
-        f"💡 Share your link with friends to earn rewards when they make purchases\!"
+        f"💡 Share your link with friends to earn rewards when they make purchases!"
     )
     
     await callback.message.edit_text(
         text,
         reply_markup=profile_keyboard(),
-        parse_mode=ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -148,25 +145,24 @@ async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
 @router.callback_query(F.data == "support")
 async def support_callback(callback: CallbackQuery) -> None:
     """Handle support information."""
-    email = "support@digitalstore.com".replace('.', '\\.')
     text = (
-        f"ℹ️ *Support & Information*\n\n"
-        f"🆘 Need help\? Contact our support team:\n"
-        f"📧 Email: {email}\n"
+        f"ℹ️ <b>Support & Information</b>\n\n"
+        f"🆘 Need help? Contact our support team:\n"
+        f"📧 Email: support@digitalstore.com\n"
         f"💬 Telegram: @support\n\n"
-        f"📋 *How to use the bot:*\n"
+        f"📋 <b>How to use the bot:</b>\n"
         f"1️⃣ Browse the catalog\n"
         f"2️⃣ Select a product\n"
         f"3️⃣ Complete payment\n"
         f"4️⃣ Receive your digital product\n\n"
-        f"💎 Don't forget to try our free trial\!"
+        f"💎 Don't forget to try our free trial!"
     )
     
     from app.bot.keyboards import back_keyboard
     await callback.message.edit_text(
         text,
         reply_markup=back_keyboard("main_menu"),
-        parse_mode=ParseMode.MARKDOWN_V2
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -180,27 +176,26 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
         # Get user order statistics
         order_stats = await OrderService.get_user_order_stats(db_user.id)
         
-        member_since = db_user.created_at.strftime('%Y-%m-%d').replace('-', '\\-')
         text = (
-            f"📊 *Your Statistics*\n\n"
-            f"👤 *Account Info:*\n"
-            f"📅 Member since: {member_since}\n"
+            f"📊 <b>Your Statistics</b>\n\n"
+            f"👤 <b>Account Info:</b>\n"
+            f"📅 Member since: {db_user.created_at.strftime('%Y-%m-%d')}\n"
             f"🎯 Trial used: {'Yes' if db_user.trial_used else 'No'}\n"
-            f"🔗 Referral code: `{db_user.referral_code}`\n"
+            f"🔗 Referral code: <code>{db_user.referral_code}</code>\n"
             f"👥 Referrals: {db_user.total_referred}\n\n"
-            f"🛒 *Order Statistics:*\n"
+            f"🛒 <b>Order Statistics:</b>\n"
             f"📦 Total orders: {order_stats.get('total_orders', 0)}\n"
             f"✅ Completed: {order_stats.get('completed_orders', 0)}\n"
             f"⏳ Pending: {order_stats.get('pending_orders', 0)}\n"
             f"💰 Total spent: {order_stats.get('total_spent', 0)} {settings.default_currency.value}\n\n"
-            f"🏆 Keep shopping to unlock more rewards\!"
+            f"🏆 Keep shopping to unlock more rewards!"
         )
         
         from app.bot.keyboards import back_keyboard
         await callback.message.edit_text(
             text,
             reply_markup=back_keyboard("profile"),
-            parse_mode=ParseMode.MARKDOWN_V2
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -212,15 +207,18 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     """Handle /help command."""
-    commands_text = "/start \\- Start the bot\n/help \\- Show this help message\n/catalog \\- Browse products\n/profile \\- View your profile\n/orders \\- View your orders"
     text = (
-        f"🆘 *Help & Commands*\n\n"
-        f"*Available commands:*\n"
-        f"{commands_text}\n\n"
-        f"Use the inline buttons to navigate through the bot\!"
+        f"🆘 <b>Help & Commands</b>\n\n"
+        f"<b>Available commands:</b>\n"
+        f"/start - Start the bot\n"
+        f"/help - Show this help message\n"
+        f"/catalog - Browse products\n"
+        f"/profile - View your profile\n"
+        f"/orders - View your orders\n\n"
+        f"Use the inline buttons to navigate through the bot!"
     )
     
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2)
+    await message.answer(text, parse_mode=ParseMode.HTML)
 
 
 @router.message(Command("catalog"))
