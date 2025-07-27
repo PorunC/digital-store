@@ -4,6 +4,7 @@ from typing import Any
 
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
+from aiogram.enums import ParseMode
 
 from app.bot.keyboards import (
     catalog_keyboard, products_keyboard, product_detail_keyboard,
@@ -42,9 +43,9 @@ async def show_catalog(message: Message, edit: bool = False) -> None:
         keyboard = catalog_keyboard(categories)
         
         if edit and message:
-            await message.edit_text(text, reply_markup=keyboard)
+            await message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
         else:
-            await message.answer(text, reply_markup=keyboard)
+            await message.answer(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
             
     except Exception as e:
         logger.error(f"Error showing catalog: {e}")
@@ -83,7 +84,8 @@ async def featured_callback(callback: CallbackQuery) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=products_keyboard(products_data, "featured")
+            reply_markup=products_keyboard(products_data, "featured"),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -150,7 +152,8 @@ async def show_category_products(callback: CallbackQuery, category: str, page: i
     
     await callback.message.edit_text(
         text,
-        reply_markup=products_keyboard(products_data, category, page)
+        reply_markup=products_keyboard(products_data, category, page),
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -192,7 +195,8 @@ async def product_detail_callback(callback: CallbackQuery) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=product_detail_keyboard(product.id, product.is_available)
+            reply_markup=product_detail_keyboard(product.id, product.is_available),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -258,6 +262,7 @@ async def create_order(callback: CallbackQuery, db_user: Any, product_id: int, g
     
     await callback.message.edit_text(
         text,
-        reply_markup=payment_keyboard(order.id)
+        reply_markup=payment_keyboard(order.id),
+        parse_mode=ParseMode.HTML
     )
     await callback.answer("Order created successfully!")

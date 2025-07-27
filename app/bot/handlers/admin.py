@@ -5,6 +5,7 @@ from typing import Any
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+from aiogram.enums import ParseMode
 
 from app.bot.keyboards import admin_keyboard, back_keyboard, confirmation_keyboard
 from app.services.user_service import UserService
@@ -48,9 +49,9 @@ async def show_admin_panel(message: Message, edit: bool = False) -> None:
     keyboard = admin_keyboard()
     
     if edit:
-        await message.edit_text(text, reply_markup=keyboard)
+        await message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
     else:
-        await message.answer(text, reply_markup=keyboard)
+        await message.answer(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
 
 
 @router.callback_query(F.data == "admin:stats")
@@ -90,7 +91,8 @@ async def admin_stats_callback(callback: CallbackQuery, is_admin: bool) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=back_keyboard("admin")
+            reply_markup=back_keyboard("admin"),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -124,7 +126,8 @@ async def admin_users_callback(callback: CallbackQuery, is_admin: bool) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=back_keyboard("admin")
+            reply_markup=back_keyboard("admin"),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -164,7 +167,7 @@ async def admin_products_callback(callback: CallbackQuery, is_admin: bool) -> No
             [InlineKeyboardButton(text="🔙 Back", callback_data="admin")],
         ])
         
-        await callback.message.edit_text(text, reply_markup=keyboard)
+        await callback.message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
         await callback.answer()
         
     except Exception as e:
@@ -204,7 +207,7 @@ async def admin_orders_callback(callback: CallbackQuery, is_admin: bool) -> None
             [InlineKeyboardButton(text="🔙 Back", callback_data="admin")],
         ])
         
-        await callback.message.edit_text(text, reply_markup=keyboard)
+        await callback.message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
         await callback.answer()
         
     except Exception as e:
@@ -226,7 +229,8 @@ async def admin_load_products_callback(callback: CallbackQuery, is_admin: bool) 
         
         await callback.message.edit_text(
             text,
-            reply_markup=back_keyboard("admin:products")
+            reply_markup=back_keyboard("admin:products"),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer(f"Loaded {loaded_count} products!")
         
@@ -254,7 +258,8 @@ async def admin_export_products_callback(callback: CallbackQuery, is_admin: bool
         
         await callback.message.edit_text(
             text,
-            reply_markup=back_keyboard("admin:products")
+            reply_markup=back_keyboard("admin:products"),
+            parse_mode=ParseMode.HTML
         )
         
     except Exception as e:
@@ -276,7 +281,8 @@ async def admin_cleanup_orders_callback(callback: CallbackQuery, is_admin: bool)
         
         await callback.message.edit_text(
             text,
-            reply_markup=back_keyboard("admin:orders")
+            reply_markup=back_keyboard("admin:orders"),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer(f"Cleaned {expired_count} expired orders!")
         
@@ -303,7 +309,8 @@ async def admin_broadcast_callback(callback: CallbackQuery, is_admin: bool) -> N
     
     await callback.message.edit_text(
         text,
-        reply_markup=back_keyboard("admin")
+        reply_markup=back_keyboard("admin"),
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 
@@ -332,7 +339,8 @@ async def admin_settings_callback(callback: CallbackQuery, is_admin: bool) -> No
     
     await callback.message.edit_text(
         text,
-        reply_markup=back_keyboard("admin")
+        reply_markup=back_keyboard("admin"),
+        parse_mode=ParseMode.HTML
     )
     await callback.answer()
 

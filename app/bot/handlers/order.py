@@ -5,6 +5,7 @@ from typing import Any
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, LabeledPrice, PreCheckoutQuery
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.enums import ParseMode
 
 from app.bot.keyboards import (
     orders_keyboard, order_detail_keyboard, payment_keyboard,
@@ -63,9 +64,9 @@ async def show_user_orders(message: Message, db_user: Any = None, edit: bool = F
             keyboard = orders_keyboard(orders_data)
         
         if edit:
-            await message.edit_text(text, reply_markup=keyboard)
+            await message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
         else:
-            await message.answer(text, reply_markup=keyboard)
+            await message.answer(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
             
     except Exception as e:
         logger.error(f"Error showing user orders: {e}")
@@ -123,7 +124,8 @@ async def order_detail_callback(callback: CallbackQuery, db_user: Any) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=order_detail_keyboard(order.id, order.status)
+            reply_markup=order_detail_keyboard(order.id, order.status),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -152,7 +154,8 @@ async def pay_order_callback(callback: CallbackQuery, db_user: Any) -> None:
         
         await callback.message.edit_text(
             text,
-            reply_markup=payment_keyboard(order.id)
+            reply_markup=payment_keyboard(order.id),
+            parse_mode=ParseMode.HTML
         )
         await callback.answer()
         
@@ -236,7 +239,7 @@ async def pay_crypto_callback(callback: CallbackQuery, db_user: Any) -> None:
             [InlineKeyboardButton(text="❌ Cancel", callback_data=f"cancel_order:{order.id}")],
         ])
         
-        await callback.message.edit_text(text, reply_markup=keyboard)
+        await callback.message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
         await callback.answer("Payment link created!")
         
     except Exception as e:
@@ -270,7 +273,8 @@ async def cancel_order_callback(callback: CallbackQuery, db_user: Any) -> None:
             
             await callback.message.edit_text(
                 text,
-                reply_markup=back_keyboard("catalog")
+                reply_markup=back_keyboard("catalog"),
+                parse_mode=ParseMode.HTML
             )
             await callback.answer("Order cancelled successfully.")
         else:
