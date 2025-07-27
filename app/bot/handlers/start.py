@@ -116,7 +116,8 @@ async def activate_trial_callback(callback: CallbackQuery, db_user: Any) -> None
 @router.callback_query(F.data == "referral")
 async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
     """Handle referral information."""
-    referral_link = f"https://t.me/{callback.bot.username}?start={db_user.referral_code}"
+    bot_info = await callback.bot.get_me()
+    referral_link = f"https://t.me/{bot_info.username}?start={db_user.referral_code}"
     
     text = (
         f"👥 <b>Referral Program</b>\n\n"
