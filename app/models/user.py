@@ -14,7 +14,7 @@ class User(Base):
     __tablename__ = "users"
     
     # Primary key
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     
     # Telegram info
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True)
