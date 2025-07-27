@@ -164,11 +164,9 @@ async def support_callback(callback: CallbackQuery) -> None:
 async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
     """Handle profile statistics callback."""
     try:
-        from app.services.user_service import UserService
         from app.services.order_service import OrderService
         
-        # Get user statistics
-        user_stats = await UserService.get_user_stats(db_user.id)
+        # Get user order statistics
         order_stats = await OrderService.get_user_order_stats(db_user.id)
         
         text = (
