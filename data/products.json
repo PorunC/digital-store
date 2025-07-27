@@ -1,0 +1,101 @@
+{
+  "categories": [
+    "software",
+    "gaming", 
+    "subscription",
+    "digital",
+    "education"
+  ],
+  "products": [
+    {
+      "name": "Premium Software License",
+      "description": "Professional software license with full features and 1 year support",
+      "category": "software",
+      "price": 999.99,
+      "currency": "RUB",
+      "delivery_type": "license_key",
+      "duration_days": 365,
+      "stock_count": null,
+      "delivery_config": {
+        "template": "🔑 Your software license:\n\nLicense Key: {license_key}\nValid until: {expiry_date}\n\n📧 Support: support@example.com",
+        "key_format": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+      },
+      "is_active": true,
+      "is_featured": true,
+      "slug": "premium-software-license",
+      "sort_order": 1
+    },
+    {
+      "name": "Steam Game Key",
+      "description": "Random premium Steam game key - guaranteed AAA title",
+      "category": "gaming",
+      "price": 299.00,
+      "currency": "RUB",
+      "delivery_type": "license_key",
+      "duration_days": 0,
+      "stock_count": 50,
+      "delivery_config": {
+        "template": "🎮 Your Steam game key:\n\nGame Key: {game_key}\n\n📝 Instructions:\n1. Open Steam client\n2. Go to Games → Activate a Product on Steam\n3. Enter the key above\n4. Enjoy your game!",
+        "key_format": "XXXXX-XXXXX-XXXXX"
+      },
+      "is_active": true,
+      "is_featured": false,
+      "slug": "steam-game-key",
+      "sort_order": 2
+    },
+    {
+      "name": "Netflix Premium Account",
+      "description": "Netflix Premium subscription with Ultra HD and 4 screens",
+      "category": "subscription",
+      "price": 599.00,
+      "currency": "RUB",
+      "delivery_type": "account_info",
+      "duration_days": 30,
+      "stock_count": 10,
+      "delivery_config": {
+        "template": "📺 Your Netflix Premium account:\n\nEmail: {email}\nPassword: {password}\n\n⚠️ Important:\n- Don't change the password\n- Use only on authorized devices\n- Account valid for 30 days",
+        "fields": ["email", "password"]
+      },
+      "is_active": true,
+      "is_featured": true,
+      "slug": "netflix-premium",
+      "sort_order": 3
+    },
+    {
+      "name": "Digital Art Pack",
+      "description": "Collection of 100+ high-quality digital art assets",
+      "category": "digital",
+      "price": 199.00,
+      "currency": "RUB",
+      "delivery_type": "download_link",
+      "duration_days": 0,
+      "stock_count": null,
+      "delivery_config": {
+        "template": "🎨 Your Digital Art Pack:\n\nDownload Link: {download_url}\nAccess Code: {access_code}\n\n📦 Package includes:\n- 100+ HD digital art pieces\n- Commercial license included\n- Bonus PSD files",
+        "fields": ["download_url", "access_code"]
+      },
+      "is_active": true,
+      "is_featured": false,
+      "slug": "digital-art-pack",
+      "sort_order": 4
+    },
+    {
+      "name": "API Access Premium",
+      "description": "Premium API access with unlimited requests and priority support",
+      "category": "digital",
+      "price": 1999.00,
+      "currency": "RUB",
+      "delivery_type": "api_access",
+      "duration_days": 30,
+      "stock_count": null,
+      "delivery_config": {
+        "template": "🔌 Your API Access:\n\nAPI Key: {api_key}\nEndpoint: {api_endpoint}\nRate Limit: Unlimited\n\n📚 Documentation: {docs_url}\n💬 Support: premium@example.com",
+        "fields": ["api_key", "api_endpoint", "docs_url"]
+      },
+      "is_active": true,
+      "is_featured": false,
+      "slug": "api-access-premium",
+      "sort_order": 5
+    }
+  ]
+}
