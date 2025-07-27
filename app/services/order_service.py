@@ -304,6 +304,46 @@ class OrderService:
                 return f"✅ Your order #{order.order_number} has been completed!"
     
     @staticmethod
+    async def get_user_order_stats(user_id: int) -> dict:
+        """Get order statistics for a specific user."""
+        async with get_session() as session:
+            # Total orders for user
+            total_query = select(func.count(Order.id)).where(Order.user_id == user_id)
+            total_result = await session.execute(total_query)
+            total_orders = total_result.scalar() or 0
+            
+            # Completed orders
+            completed_query = select(func.count(Order.id)).where(
+                Order.user_id == user_id,
+                Order.status == OrderStatus.COMPLETED.value
+            )
+            completed_result = await session.execute(completed_query)
+            completed_orders = completed_result.scalar() or 0
+            
+            # Pending orders
+            pending_query = select(func.count(Order.id)).where(
+                Order.user_id == user_id,
+                Order.status == OrderStatus.PENDING.value
+            )
+            pending_result = await session.execute(pending_query)
+            pending_orders = pending_result.scalar() or 0
+            
+            # Total spent (completed orders only)
+            spent_query = select(func.sum(Order.total_price)).where(
+                Order.user_id == user_id,
+                Order.status == OrderStatus.COMPLETED.value
+            )
+            spent_result = await session.execute(spent_query)
+            total_spent = float(spent_result.scalar() or 0)
+            
+            return {
+                'total_orders': total_orders,
+                'completed_orders': completed_orders,
+                'pending_orders': pending_orders,
+                'total_spent': total_spent
+            }
+    
+    @staticmethod
     def _generate_order_number(length: int = 8) -> str:
         """Generate a random order number."""
         chars = string.ascii_uppercase + string.digits

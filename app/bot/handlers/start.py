@@ -160,6 +160,44 @@ async def support_callback(callback: CallbackQuery) -> None:
     await callback.answer()
 
 
+@router.callback_query(F.data == "profile_stats")
+async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
+    """Handle profile statistics callback."""
+    try:
+        from app.services.user_service import UserService
+        from app.services.order_service import OrderService
+        
+        # Get user statistics
+        user_stats = await UserService.get_user_stats(db_user.id)
+        order_stats = await OrderService.get_user_order_stats(db_user.id)
+        
+        text = (
+            f"📊 <b>Your Statistics</b>\n\n"
+            f"👤 <b>Account Info:</b>\n"
+            f"📅 Member since: {db_user.created_at.strftime('%Y-%m-%d')}\n"
+            f"🎯 Trial used: {'Yes' if db_user.trial_used else 'No'}\n"
+            f"🔗 Referral code: <code>{db_user.referral_code}</code>\n"
+            f"👥 Referrals: {db_user.total_referred}\n\n"
+            f"🛒 <b>Order Statistics:</b>\n"
+            f"📦 Total orders: {order_stats.get('total_orders', 0)}\n"
+            f"✅ Completed: {order_stats.get('completed_orders', 0)}\n"
+            f"⏳ Pending: {order_stats.get('pending_orders', 0)}\n"
+            f"💰 Total spent: {order_stats.get('total_spent', 0)} {settings.default_currency.value}\n\n"
+            f"🏆 Keep shopping to unlock more rewards!"
+        )
+        
+        from app.bot.keyboards import back_keyboard
+        await callback.message.edit_text(
+            text,
+            reply_markup=back_keyboard("profile")
+        )
+        await callback.answer()
+        
+    except Exception as e:
+        logger.error(f"Failed to get user statistics: {e}")
+        await callback.answer("❌ Failed to load statistics. Please try again.", show_alert=True)
+
+
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     """Handle /help command."""
