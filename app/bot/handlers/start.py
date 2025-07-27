@@ -45,7 +45,7 @@ async def main_menu_callback(callback: CallbackQuery, db_user: Any, state: FSMCo
     text = (
         f"🏠 *Main Menu*\n\n"
         f"Welcome back, {db_user.display_name}\!\n"
-        f"What would you like to do\?"
+        f"What would you like to do?"
     )
     
     await callback.message.edit_text(
@@ -69,11 +69,12 @@ async def profile_callback(callback: CallbackQuery, db_user: Any) -> None:
     else:
         trial_info = "🟡 Available"
     
+    joined_date = db_user.created_at.strftime('%Y-%m-%d').replace('-', '\\-')
     text = (
         f"👤 *Your Profile*\n\n"
         f"🆔 ID: `{db_user.telegram_id}`\n"
         f"👤 Name: {db_user.display_name}\n"
-        f"📅 Joined: {db_user.created_at.strftime('%Y\\-%m\\-%d')}\n"
+        f"📅 Joined: {joined_date}\n"
         f"💎 Trial: {trial_info}\n"
         f"👥 Referrals: {db_user.total_referred}\n"
         f"🔗 Your referral code: `{db_user.referral_code}`"
@@ -101,11 +102,13 @@ async def activate_trial_callback(callback: CallbackQuery, db_user: Any) -> None
     success = await UserService.activate_trial(db_user.id)
     
     if success:
+        trial_expire_date = db_user.trial_end.strftime('%Y-%m-%d %H:%M').replace('-', '\\-') if db_user.trial_end else 'N/A'
+        duration_text = str(settings.trial_duration_days).replace('-', '\\-')
         text = (
             f"🎉 *Trial Activated\!*\n\n"
-            f"✅ Your {settings.trial_duration_days}\\-day free trial is now active\!\n"
+            f"✅ Your {duration_text}\\-day free trial is now active\!\n"
             f"🛍️ Browse our catalog and enjoy premium access\.\n\n"
-            f"Trial expires: {db_user.trial_end.strftime('%Y\\-%m\\-%d %H:%M') if db_user.trial_end else 'N/A'}"
+            f"Trial expires: {trial_expire_date}"
         )
         
         await callback.message.edit_text(
@@ -145,10 +148,11 @@ async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
 @router.callback_query(F.data == "support")
 async def support_callback(callback: CallbackQuery) -> None:
     """Handle support information."""
+    email = "support@digitalstore.com".replace('.', '\\.')
     text = (
         f"ℹ️ *Support & Information*\n\n"
         f"🆘 Need help\? Contact our support team:\n"
-        f"📧 Email: support@digitalstore\.com\n"
+        f"📧 Email: {email}\n"
         f"💬 Telegram: @support\n\n"
         f"📋 *How to use the bot:*\n"
         f"1️⃣ Browse the catalog\n"
@@ -176,10 +180,11 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
         # Get user order statistics
         order_stats = await OrderService.get_user_order_stats(db_user.id)
         
+        member_since = db_user.created_at.strftime('%Y-%m-%d').replace('-', '\\-')
         text = (
             f"📊 *Your Statistics*\n\n"
             f"👤 *Account Info:*\n"
-            f"📅 Member since: {db_user.created_at.strftime('%Y\\-%m\\-%d')}\n"
+            f"📅 Member since: {member_since}\n"
             f"🎯 Trial used: {'Yes' if db_user.trial_used else 'No'}\n"
             f"🔗 Referral code: `{db_user.referral_code}`\n"
             f"👥 Referrals: {db_user.total_referred}\n\n"
@@ -207,14 +212,11 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     """Handle /help command."""
+    commands_text = "/start \\- Start the bot\n/help \\- Show this help message\n/catalog \\- Browse products\n/profile \\- View your profile\n/orders \\- View your orders"
     text = (
         f"🆘 *Help & Commands*\n\n"
         f"*Available commands:*\n"
-        f"/start \- Start the bot\n"
-        f"/help \- Show this help message\n"
-        f"/catalog \- Browse products\n"
-        f"/profile \- View your profile\n"
-        f"/orders \- View your orders\n\n"
+        f"{commands_text}\n\n"
         f"Use the inline buttons to navigate through the bot\!"
     )
     
