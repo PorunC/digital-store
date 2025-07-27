@@ -41,7 +41,7 @@ async def main_menu_callback(callback: CallbackQuery, db_user: Any, state: FSMCo
     await state.clear()
     
     text = (
-        f"🏠 <b>Main Menu</b>\n\n"
+        f"🏠 **Main Menu**\n\n"
         f"Welcome back, {db_user.display_name}!\n"
         f"What would you like to do?"
     )
@@ -67,13 +67,13 @@ async def profile_callback(callback: CallbackQuery, db_user: Any) -> None:
         trial_info = "🟡 Available"
     
     text = (
-        f"👤 <b>Your Profile</b>\n\n"
-        f"🆔 ID: <code>{db_user.telegram_id}</code>\n"
+        f"👤 **Your Profile**\n\n"
+        f"🆔 ID: `{db_user.telegram_id}`\n"
         f"👤 Name: {db_user.display_name}\n"
         f"📅 Joined: {db_user.created_at.strftime('%Y-%m-%d')}\n"
         f"💎 Trial: {trial_info}\n"
         f"👥 Referrals: {db_user.total_referred}\n"
-        f"🔗 Your referral code: <code>{db_user.referral_code}</code>"
+        f"🔗 Your referral code: `{db_user.referral_code}`"
     )
     
     await callback.message.edit_text(
@@ -98,7 +98,7 @@ async def activate_trial_callback(callback: CallbackQuery, db_user: Any) -> None
     
     if success:
         text = (
-            f"🎉 <b>Trial Activated!</b>\n\n"
+            f"🎉 **Trial Activated!**\n\n"
             f"✅ Your {settings.trial_duration_days}-day free trial is now active!\n"
             f"🛍️ Browse our catalog and enjoy premium access.\n\n"
             f"Trial expires: {db_user.trial_end.strftime('%Y-%m-%d %H:%M') if db_user.trial_end else 'N/A'}"
@@ -120,10 +120,10 @@ async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
     referral_link = f"https://t.me/{bot_info.username}?start={db_user.referral_code}"
     
     text = (
-        f"👥 <b>Referral Program</b>\n\n"
+        f"👥 **Referral Program**\n\n"
         f"🎁 Invite friends and earn rewards!\n\n"
         f"🔗 Your referral link:\n"
-        f"<code>{referral_link}</code>\n\n"
+        f"`{referral_link}`\n\n"
         f"📊 Your statistics:\n"
         f"👥 Total referrals: {db_user.total_referred}\n\n"
         f"💡 Share your link with friends to earn rewards when they make purchases!"
@@ -140,11 +140,11 @@ async def referral_callback(callback: CallbackQuery, db_user: Any) -> None:
 async def support_callback(callback: CallbackQuery) -> None:
     """Handle support information."""
     text = (
-        f"ℹ️ <b>Support & Information</b>\n\n"
+        f"ℹ️ **Support & Information**\n\n"
         f"🆘 Need help? Contact our support team:\n"
         f"📧 Email: support@digitalstore.com\n"
         f"💬 Telegram: @support\n\n"
-        f"📋 <b>How to use the bot:</b>\n"
+        f"📋 **How to use the bot:**\n"
         f"1️⃣ Browse the catalog\n"
         f"2️⃣ Select a product\n"
         f"3️⃣ Complete payment\n"
@@ -170,13 +170,13 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
         order_stats = await OrderService.get_user_order_stats(db_user.id)
         
         text = (
-            f"📊 <b>Your Statistics</b>\n\n"
-            f"👤 <b>Account Info:</b>\n"
+            f"📊 **Your Statistics**\n\n"
+            f"👤 **Account Info:**\n"
             f"📅 Member since: {db_user.created_at.strftime('%Y-%m-%d')}\n"
             f"🎯 Trial used: {'Yes' if db_user.trial_used else 'No'}\n"
-            f"🔗 Referral code: <code>{db_user.referral_code}</code>\n"
+            f"🔗 Referral code: `{db_user.referral_code}`\n"
             f"👥 Referrals: {db_user.total_referred}\n\n"
-            f"🛒 <b>Order Statistics:</b>\n"
+            f"🛒 **Order Statistics:**\n"
             f"📦 Total orders: {order_stats.get('total_orders', 0)}\n"
             f"✅ Completed: {order_stats.get('completed_orders', 0)}\n"
             f"⏳ Pending: {order_stats.get('pending_orders', 0)}\n"
@@ -200,8 +200,8 @@ async def profile_stats_callback(callback: CallbackQuery, db_user: Any) -> None:
 async def help_command(message: Message) -> None:
     """Handle /help command."""
     text = (
-        f"🆘 <b>Help & Commands</b>\n\n"
-        f"<b>Available commands:</b>\n"
+        f"🆘 **Help & Commands**\n\n"
+        f"**Available commands:**\n"
         f"/start - Start the bot\n"
         f"/help - Show this help message\n"
         f"/catalog - Browse products\n"
